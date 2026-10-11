@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function NotFound() { return <div className="public-wrap"><div className="public-card auth-card" style={{ textAlign: "center" }}><p className="eyebrow">404 · page not found</p><h1>This page moved.</h1><p className="subtitle">Choose a workspace to continue.</p><div className="head-actions" style={{ justifyContent: "center", marginTop: 22 }}><Link className="btn btn-primary" href="/student">Student workspace</Link><Link className="btn btn-ghost" href="/admin">Admin workspace</Link></div></div></div>; }

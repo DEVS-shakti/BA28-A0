@@ -1,0 +1,6 @@
+import Link from "next/link";
+import { ArrowRight, KeyRound, ShieldCheck } from "lucide-react";
+import { AuthShell } from "@/components/app-shell";
+import { Notice } from "@/components/ui";
+
+export default function JoinPage() { return <AuthShell><div className="auth-card" style={{ margin: "0 auto" }}><Link href="/login" className="section-link">← Back to sign in</Link><p className="eyebrow" style={{ marginTop: 31 }}>Enrollment verification</p><h1>Join your class.</h1><p className="subtitle">Enter the class code shared by your administrator. A code alone never claims a student identity.</p><div className="field" style={{ marginTop: 25 }}><label>BA-28A0 class access code</label><div className="search" style={{ width: "100%" }}><KeyRound size={16} /><input placeholder="e.g. BA28A0-••••" /></div></div><Notice>After code validation, you&apos;ll match your account to a pre-created student record or send an approval request.</Notice><div className="auth-actions"><Link className="btn btn-primary" href="/pending">Continue securely <ArrowRight size={15} /></Link></div><div className="footer-note"><ShieldCheck size={13} style={{ verticalAlign: -2, marginRight: 4 }} />Identity claims stay private from other students.</div></div></AuthShell>; }
