@@ -1,0 +1,6 @@
+import Link from "next/link";
+import { LockKeyhole, ShieldCheck } from "lucide-react";
+
+export function ProductionLock({ area }: { area: "student" | "admin" }) {
+  return <div className="content"><div className="card" style={{ maxWidth: 680, margin: "8vh auto", textAlign: "center" }}><div className="avatar" style={{ margin: "0 auto 18px", background: "rgba(246,189,96,.13)", color: "#f6bd60" }}><LockKeyhole size={19} /></div><p className="eyebrow">Production containment active</p><h1>{area === "admin" ? "Admin access is not configured." : "Student access is not configured."}</h1><p className="subtitle" style={{ lineHeight: 1.7 }}>ClassRank is currently fail-closed while Firebase Authentication and server-side authorization are being configured. No demo marks or student records are shown in production mode.</p><div className="callout" style={{ textAlign: "left", marginTop: 20 }}><ShieldCheck size={14} style={{ verticalAlign: -3, marginRight: 7 }} />Set <code>CLASSRANK_MODE=demo</code> only for a local isolated preview. Production must use a real authenticated Firebase-backed data path.</div><Link className="btn btn-ghost" style={{ marginTop: 20 }} href="/">Return to ClassRank home</Link></div></div>;
+}

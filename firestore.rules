@@ -2,13 +2,47 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function admin() { return signedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; }
-    match /users/{uid} { allow read: if signedIn() && (request.auth.uid == uid || admin()); allow write: if admin(); }
-    match /classes/{classId} { allow read: if signedIn(); allow write: if admin(); }
-    match /students/{studentId} { allow read: if signedIn() && (admin() || resource.data.userId == request.auth.uid); allow write: if admin(); }
-    match /tests/{testId} { allow read: if signedIn(); allow write: if admin(); }
-    match /results/{resultId} { allow read: if signedIn() && (admin() || resource.data.userId == request.auth.uid || resource.data.public == true); allow write: if admin(); }
-    match /auditLogs/{logId} { allow read, write: if admin(); }
-    match /imports/{importId} { allow read, write: if admin(); }
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function published(resource) { return resource.data.publicationStatus == 'published'; }
+
+    // Client writes are intentionally disabled until trusted server operations are deployed.
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || admin());
+      allow write: if false;
+    }
+    match /classes/{classId} {
+      allow read: if false;
+      allow write: if false;
+    }
+    match /students/{studentId} {
+      allow read: if admin() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow write: if false;
+    }
+    match /tests/{testId} {
+      allow read: if admin() || (signedIn() && resource.data.public == true && published(resource));
+      allow write: if false;
+    }
+    match /results/{resultId} {
+      allow read: if admin()
+        || (signedIn() && resource.data.userId == request.auth.uid)
+        || (signedIn() && resource.data.public == true && published(resource));
+      allow write: if false;
+    }
+    match /auditLogs/{logId} {
+      allow read: if admin();
+      allow write: if false;
+    }
+    match /imports/{importId} {
+      allow read: if admin();
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
   }
 }
