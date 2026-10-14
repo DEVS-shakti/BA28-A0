@@ -49,9 +49,9 @@ export function AuthForm({ nextPath }: { nextPath?: string }) {
       router.refresh();
     } catch (caught) {
       const detail = caught instanceof Error ? caught.message : "";
-      if (detail === "Firebase Authentication is not configured.") setError(detail);
+      if (detail === "Firebase Authentication is not configured." || detail === "Authentication service is not configured.") setError(detail);
       else if (mode === "recovery") setMessage("If an account matches that address, a recovery email has been sent.");
-      else setError(mode === "signup" ? "Unable to create that account. Check the details and try again." : "Unable to sign in with those credentials.");
+      else setError(detail || (mode === "signup" ? "Unable to create that account. Check the details and try again." : "Unable to sign in with those credentials."));
     } finally {
       setBusy(false);
     }
