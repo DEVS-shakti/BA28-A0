@@ -44,14 +44,15 @@ export function AuthForm({ nextPath }: { nextPath?: string }) {
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(typeof result.error === "string" ? result.error : "Unable to create a secure session.");
-      const destination = safeNext(nextPath ?? null) ?? (result.role === "admin" ? "/admin" : result.needsEnrollment ? "/join" : "/student");
+      const target = safeNext(nextPath ?? null);
+      const destination = (target && !target.startsWith("/join")) ? target : (result.role === "admin" ? "/admin" : "/student");
       router.replace(destination);
       router.refresh();
     } catch (caught) {
       const detail = caught instanceof Error ? caught.message : "";
-      if (detail === "Firebase Authentication is not configured.") setError(detail);
+      if (detail === "Firebase Authentication is not configured." || detail === "Authentication service is not configured.") setError(detail);
       else if (mode === "recovery") setMessage("If an account matches that address, a recovery email has been sent.");
-      else setError(mode === "signup" ? "Unable to create that account. Check the details and try again." : "Unable to sign in with those credentials.");
+      else setError(detail || (mode === "signup" ? "Unable to create that account. Check the details and try again." : "Unable to sign in with those credentials."));
     } finally {
       setBusy(false);
     }
