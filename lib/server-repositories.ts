@@ -55,8 +55,16 @@ export async function ensureStudentProfile(uid: string, email: string | null): P
     return profile;
   }
 
-  await ref.create({ uid, email, role: "student", createdAt: Timestamp.now(), lastSignInAt: Timestamp.now() });
-  return { uid, email, role: "student" };
+  await ref.create({ uid, email, role: "student", classId: CLASS_ID, enrollmentStatus: "approved", createdAt: Timestamp.now(), lastSignInAt: Timestamp.now() });
+  await db.collection("enrollments").doc(`${CLASS_ID}_${uid}`).set({
+    id: `${CLASS_ID}_${uid}`,
+    classId: CLASS_ID,
+    uid,
+    status: "approved",
+    claimMethod: "class_code",
+    createdAt: Timestamp.now(),
+  }, { merge: true });
+  return { uid, email, role: "student", classId: CLASS_ID, enrollmentStatus: "approved" };
 }
 
 export async function getEnrollment(uid: string): Promise<Enrollment | null> {

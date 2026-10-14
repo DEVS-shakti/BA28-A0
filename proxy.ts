@@ -9,8 +9,8 @@ export function proxy(request: NextRequest) {
   }
   if (request.nextUrl.pathname === "/join") {
     const url = request.nextUrl.clone();
-    url.pathname = "/join/secure";
-    return NextResponse.rewrite(url);
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
   }
   if (request.nextUrl.pathname === "/pending") {
     const url = request.nextUrl.clone();

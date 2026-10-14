@@ -44,7 +44,8 @@ export function AuthForm({ nextPath }: { nextPath?: string }) {
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(typeof result.error === "string" ? result.error : "Unable to create a secure session.");
-      const destination = safeNext(nextPath ?? null) ?? (result.role === "admin" ? "/admin" : result.needsEnrollment ? "/join" : "/student");
+      const target = safeNext(nextPath ?? null);
+      const destination = (target && !target.startsWith("/join")) ? target : (result.role === "admin" ? "/admin" : "/student");
       router.replace(destination);
       router.refresh();
     } catch (caught) {

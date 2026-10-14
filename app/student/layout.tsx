@@ -9,8 +9,9 @@ export default async function StudentLayout({ children }: { children: React.Reac
   if (!isProductionMode) return <SecureAppShell role="student">{children}</SecureAppShell>;
   const session = await getSessionUser();
   if (!session) redirect("/login?next=/student");
+  if (session.profile.role === "admin") redirect("/admin");
   if (session.profile.role !== "student") redirect("/unauthorized");
   const enrollment = await getEnrollment(session.uid);
-  if (!session.profile.studentId || enrollment?.status !== "approved") redirect("/pending");
+  if (enrollment?.status === "rejected") redirect("/pending");
   return <SecureAppShell role="student"><DataAccessGate area="student" /></SecureAppShell>;
 }
